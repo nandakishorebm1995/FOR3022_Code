@@ -1,6 +1,5 @@
 function Ncn = pointsComputation_FEM(b,Imax,Imin,mse,params)
-%% Identifies parameter sample points with maximum error indicator values
-
+%% Identifies parameter sample points with maximum error indicator values 
 %%
     nT = 500;                                             % nT = 10;
     trialPoints = params(randperm(size(params,1),nT),:);

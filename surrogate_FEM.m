@@ -1,5 +1,5 @@
 function [Imax,Imin,mse,b]=surrogate_FEM(Nc0,EIs)
-%% Test GIT
+%% SURROGATE TO ESTIMATE THE ERROR INDICATOR
     
     x1 = Nc0(:,1);
     x2 = Nc0(:,2);
