@@ -14,7 +14,8 @@ function [dircoeff] = NewmarkIntegration3(M,K,fr,dt,sp,tsim)
 %
 % Output:
 %             dircoeff - Output matrix
-%%
+%% ALGORITHM
+
 beta = 0.25;  % Newmark parameter: 0<= beta <=0.25
 gamma = 0.5;  % Newmark numerical damping parameter:  gamma = 0.5
 ukp1=zeros(sp,1);
@@ -25,8 +26,8 @@ dircoeff = zeros(sp,size(fr,2));
 
 for i = 2:floor(tsim/dt)
     
-    uk = ukp1;
-    udk = udkp1;
+    uk   = ukp1;
+    udk  = udkp1;
     uddk = uddkp1;
     
     % STEP 1: Calculation of the predictors

@@ -5,7 +5,12 @@ format long g;
 
 %% SINEBURST EXCITATION
 
-fex = 120000; T = 1/fex; n = 5; dt = T/20; tsim = 5*n*T;
+fex = 120000; % Central frequency of excitation
+T = 1/fex;    % Time period
+n = 5;        % Number of cycles
+dt = T/20;    % Time step 
+tsim = 5*n*T; % Total time of wave propagation simulation
+
 Vamp = 10e-9; %30;
 UU = zeros(1,500);
 for i = 1:100
@@ -35,13 +40,20 @@ Damage_size = [0.01,1.2e-04];
 tic;
 [E,K,L0] = FML_FEM_MATRIX_EXTRACT(Damage_E,Damage_pos,Damage_size,UU);
 HDM = FML_FEM_HDM(Damage_E,Damage_pos,Damage_size);
+
+% Generated reduced-order bases (ROBs)
 Phi = load('AdaptivePOD_550.mat'); Phi = Phi.V;
 ROS = FML_FEM_ROM(E,K,L0,dt,tsim,Phi);
 toc;
 
+% Additive Gaussian noise
 error = normrnd(0,1e-19,1,497);
 measurement = ROS(15648,4:end) + error;
+
+% Total number of samples to be drawn
 samplings = 7000;
+
+% Array to collect the samples from posterior distribution
 samples = zeros(samplings,3);
 
 %% MCMC - METROPOLIS HASTINGS ALGORITHM

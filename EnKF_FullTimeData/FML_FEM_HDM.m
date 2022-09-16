@@ -49,40 +49,5 @@ model.sol('sol1').runAll;
 
 U_COM = mphgetu(model,'solnum',[1:1:500]);
 
-%%
-% %% EXTRACTION OF SYSTEM MATRICES
-% 
-% str = mphmatrix(model,'sol1','out',{'E','K','L'},'initmethod','init','initsol','zero');
-% E = str.E; 
-% K = str.K;
-% sp = size(K,1);
-% 
-% %% EVALUATION OF LOAD MATRIX
-% 
-% L0 = zeros(sp,500);
-% L0(2,:) = UU;
-% L0(966,:) = UU;
-
-%% SWITCH THIS ON FOR COMPARISON OF COMSOL AND SUBROUTINE SOLUTION
-%% NUMERICAL INTEGRATION OF THE SECOND ORDER ODE (NEWMARK'S BETA METHOD)
-
-% tic;
-% [dircoeff] = NewmarkIntegration3(E,K,L0,dt,sp,tsim);
-% toc;
-
-% PLOTTING
-% Comparison with the solution obtained from COMSOL
-
-% figure;plot(linspace(0,tsim,500),dircoeff(3504,:),'linewidth',2);
-% fid = fopen('PlotCompare.txt','rt');
-% CD = textscan(fid,'%f%f','Delimiter','\t');
-% ComData = [CD{1,1},CD{1,2}];
-% 
-% hold on; plot(ComData(:,1),ComData(:,2),'linewidth',2);
-% grid on; legend('Matlab subroutine solution', 'COMSOL solution');
-% title('Wave propagation recorded at (0.0575,0.0014225)');
-% xlabel('Time in s');
-% ylabel('Vertical displacement in m');
-
 end
 

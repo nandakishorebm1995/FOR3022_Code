@@ -43,11 +43,11 @@ Ne = 6;
 rid = randi(1000,Ne,1);
 
 % PARAMETER ENSEMBLE INITIATION
-Parameter_ensemble_0 = [25e8, 0.07, 0.01;
+Parameter_ensemble_0 = [25e8, 0.03, 0.01;
                         05e8, 0.06, 0.006;
                         35e8, 0.05, 0.005;
-                        10e8, 0.06, 0.008;
-                        18e8, 0.04, 0.004;
+                        10e8, 0.08, 0.008;
+                        18e8, 0.04, 0.003;
                         28e8, 0.07, 0.007];
 
 %% TEST PARAMETERS
@@ -60,11 +60,12 @@ Parameter_ensemble_0 = [25e8, 0.07, 0.01;
 % Measurement 7: [20e8, 0.05, 0.008];
 
 % MEASUREMENT DATA WITH SCALING 
-MD = load('MD5.mat'); 
-MD = abs(MD.ROS);
+MD = load('MD5.mat');                                                      
+MD = MD.ROS;
 Observation_ensemble_q = MD(15648,1:500)'.*ones(500,Ne);
 Observation_ensemble_q_scaled = rescale(Observation_ensemble_q);
 samples = [0,0,0];
+solutions_c = [0,0,0,0,0,0];
 
 %% LOADING GLOBAL REDUCED-ORDER BASES (ROBs)
 
@@ -73,21 +74,31 @@ id=warn.identifier;
 warning('off',id);
 
 Phi = load('AdaptivePOD_550.mat'); Phi = Phi.V;
-Observation_ensemble = zeros(500,Ne);
-Solution_ensemble = zeros(79266,Ne);
+% Observation_ensemble = zeros(500,Ne);
+% Solution_ensemble = zeros(79266,Ne);
 tic; 
+
+start_timeStep = 1;
+end_timeStep = 500;
+update_freq = 1;
+
+uk   = load('ukp1.mat'); uk = zeros(542,Ne).*(uk.ukp1);
+udk  = load('udkp1.mat'); udk = zeros(542,Ne).*(udk.udkp1); 
+uddk = load('uddkp1.mat'); uddk = zeros(542,Ne).*(uddk.uddkp1);
 
 %% ENSEMBLE KALMAN FILTER PROCEDURE WITH FEATURE SCALING
 
-for k = 190:2:500 % FREQUENCY OF UPDATE
+for k = start_timeStep:update_freq:end_timeStep % FREQUENCY OF UPDATE
     fprintf ('k = %d \n',k);
     
     for j = 1:Ne
         fprintf ('j = %d \n',j);
         [E,K,L0] = FML_FEM_MATRIX_EXTRACT(Parameter_ensemble_0(j,1),[Parameter_ensemble_0(j,2),1.24e-03],[Parameter_ensemble_0(j,3),1.2e-04],UU);
-        ROS = FML_FEM_ROM(E,K,L0,dt,tsim,Phi);
-        Observation_ensemble(:,j) = abs(ROS(15648,1:500))'; 
-        Solution_ensemble(:,j) = abs(ROS(:,k)); % 
+        [ROS,udkp1,uddkp1] = FML_FEM_ROM(E,K,L0,dt,tsim,Phi,k,uk(:,j),udk(:,j),uddk(:,j));
+        Observation_ensemble(j) = ROS(15648,:)'; 
+        Solution_ensemble(:,j) = ROS(:); % 
+        udkp1(:,j) = udkp1;
+        uddkp1(:,j) = uddkp1;
     end
     
     % FEATURE SCALING
@@ -97,7 +108,7 @@ for k = 190:2:500 % FREQUENCY OF UPDATE
     Parameter_ensemble_0_scaled(:,3) = rescale([Parameter_ensemble_0(:,3);p3]);
     Parameter_ensemble_0_scaled = Parameter_ensemble_0_scaled(1:Ne,:);
     Solution_ensemble_scaled = rescale(Solution_ensemble);
-    variance = rescale([3e-20;Observation_ensemble(:,1)]);
+    variance = rescale([0;Observation_ensemble_q(:,1)],-1,1);
     
     % PREDICTION STAGE
     mean_Observation_ensemble = mean(Observation_ensemble,2);
@@ -115,7 +126,7 @@ for k = 190:2:500 % FREQUENCY OF UPDATE
     mean_Solution_ensemble_scaled = mean_Solution_ensemble_to_be_scaled(:,end);
     
     % COMPUTATION OF COVARIANCE MATRICES
-    omo = Observation_ensemble_scaled(k,:) - ones(1,Ne)*mean_Observation_ensemble_scaled(k);    
+    omo = Observation_ensemble_scaled - ones(1,Ne)*mean_Observation_ensemble_scaled;    
     Cshsh = (omo*omo')/(Ne-1);    
     Cmuhsh = ((Parameter_ensemble_0_scaled' - ones(3,Ne).*mean_Parameter_ensemble_0_scaled)*omo')/(Ne-1);
     Cuhsh = ((Solution_ensemble_scaled - (mean_Solution_ensemble_scaled.*ones(79266,Ne)))*omo')/(Ne-1);
@@ -123,10 +134,11 @@ for k = 190:2:500 % FREQUENCY OF UPDATE
     % ANALYSIS STAGE 
     Gamma = variance(1);   
     denom = Gamma + Cshsh;   
-    sqmsh = Observation_ensemble_q_scaled(k,:) - Observation_ensemble_scaled(k,:);   
+    sqmsh = Observation_ensemble_q_scaled(k,:) - Observation_ensemble_scaled;   
     right = sqmsh./denom;   
     rright = [Cmuhsh; Cuhsh]*right;    
     Parameter_ensemble_0_new = rright(1:3,:)';
+    Solution_ensemble_0_new = rright(4:end,:);
    
     Parameter_ensemble_0_new = Parameter_ensemble_0_scaled + Parameter_ensemble_0_new;
     Parameter_ensemble_0_rescaled(:,1) = round(rescale([Parameter_ensemble_0_new(:,1); 0; 1],p1(1),p1(2)));
@@ -134,10 +146,19 @@ for k = 190:2:500 % FREQUENCY OF UPDATE
     Parameter_ensemble_0_rescaled(:,3) = round(rescale([Parameter_ensemble_0_new(:,3); 0; 1],p3(1),p3(2)),3);    
     Parameter_ensemble_0 = Parameter_ensemble_0_rescaled(1:Ne,:);
     
+    Solution_ensemble_new = Solution_ensemble_scaled + Solution_ensemble_0_new;
+    Solution_ensemble_new_scaled = rescale(Solution_ensemble_new, min(MD(:,k)),max(MD(:,k)));
+    
     samples = [samples; Parameter_ensemble_0];
+    solutions_c = [solutions_c; Solution_ensemble_new_scaled(15648,:)];
     
     vars = {'Parameter_ensemble_0_scaled', 'Parameter_ensemble_0_rescaled'};
     clear(vars{:}); 
+    
+    uk = Phi\Solution_ensemble_new_scaled;
+    udk = udkp1;
+    uddk = uddkp1;
+
     
  end
 

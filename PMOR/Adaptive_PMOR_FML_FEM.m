@@ -14,7 +14,7 @@ end
 
 %% PARAMETER SPACE AND DEFINITION
 
-de = 50e6:5e8:50e8;         % Stiffness of the damage
+de = 50e6:5e8:50e8;         % Stiffness of the damage#+
 dp = 0.02:0.01:0.11;        % X-position of the damage
 ds = 0.002:0.001:0.011;     % Size of the damage
 

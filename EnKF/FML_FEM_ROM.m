@@ -15,7 +15,8 @@ function [U_recon] = FML_FEM_ROM(E,K,L0,dt,tsim,Phi)
 
 %% REDUCED ORDER SOLUTION
 
-Er = Phi'*E*Phi; Kr = Phi'*K*Phi; Fr = Phi'*L0; % Reduced system matrices
+% Reduced system matrices
+Er = Phi'*E*Phi; Kr = Phi'*K*Phi; Fr = Phi'*L0;
 sp = size(Kr,1);
 [alpha] = NewmarkIntegration3(Er,Kr,Fr,dt,sp,tsim);
 U_recon = Phi*alpha;
