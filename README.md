@@ -1,4 +1,6 @@
 # Damage Identification in Fiber Metal Laminates using Bayesian Analysis with Model Order Reduction
+
+<img src="Logos/logo-tubs.png" alt="drawing" width="305"/> <img src="Logos/SHM_Logo_Git.png" alt="drawing" width="340"/> <img src="Logos/logo-dfg.jpg" alt="drawing" width="200"/> 
  
 ### Description of the directories: 
 
