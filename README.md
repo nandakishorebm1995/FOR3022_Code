@@ -1,14 +1,18 @@
 # Damage Identification in Fiber Metal Laminates using Bayesian Analysis with Model Order Reduction
 
 <img src="Logos/logo-tubs.png" alt="drawing" width="205"/> <img src="Logos/SHM_Logo_Git.png" alt="drawing" width="230"/> <img src="Logos/logo-dfg.jpg" alt="drawing" width="135"/> 
- 
+
+### Link to TU Braunschweig cloud storage to access data:
+https://cloud.tu-braunschweig.de/s/q6WfZGGQbwG5b75
+
+
 ### Description of the directories: 
 
 * EnKF: 
-     + Implements the ensemble Kalman filter method as a sequential data assimilation algorithm. It requires all the data from the TU BS cloud storage along with all the MATLAB files within this directory and to successfully conduct the test for damage identification.
+     + Implements the ensemble Kalman filter method as a sequential data assimilation algorithm. It requires all the data from the TU Braunschweig cloud storage along with all the MATLAB files within this directory and to successfully conduct the test for damage identification.
  
 * MCMC: 
-    + Implements the Markov chain Monte Carlo method with Metropolis-Hastings algorithm in a Bayesian framework. It requires all the data from the TU BS cloud storage along with all the MATLAB files within this directory and to successfully conduct the test for damage identification.
+    + Implements the Markov chain Monte Carlo method with Metropolis-Hastings algorithm in a Bayesian framework. It requires all the data from the TU Braunschweig cloud storage along with all the MATLAB files within this directory and to successfully conduct the test for damage identification.
     
 * PMOR: 
     + Implements adaptive parametric model order reduction method that reduces the computation time by a factor of approximately 33 compared to that of the high-fidelity simulation using COMSOL-Multiphysics software. It requires the COMSOL model ("Stahl_laminat_032021_mesh.mph") from the TU BS cloud storage along with all the MATLAB files within this directory and to successfully generate the required number of global reduced order bases (ROBs).
