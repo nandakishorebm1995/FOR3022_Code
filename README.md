@@ -2,6 +2,13 @@
 
 <img src="Logos/logo-tubs.png" alt="drawing" width="205"/> <img src="Logos/SHM_Logo_Git.png" alt="drawing" width="230"/> <img src="Logos/logo-dfg.jpg" alt="drawing" width="135"/> 
 
+### Softwares required and configuration
+
+* COMSOL-Multiphysics software 5.6 with LiveLink
+* MATLAB
+
+Establish a LiveLink which extends the COMSOL modeling environment with an interface between COMSOL Multiphysics and MATLAB. 
+
 ### Link to TU Braunschweig cloud storage to access data:
 https://cloud.tu-braunschweig.de/s/q6WfZGGQbwG5b75
 
