@@ -108,7 +108,7 @@ for k = start_timeStep:update_freq:end_timeStep % FREQUENCY OF UPDATE
     Parameter_ensemble_0_scaled(:,3) = rescale([Parameter_ensemble_0(:,3);p3]);
     Parameter_ensemble_0_scaled = Parameter_ensemble_0_scaled(1:Ne,:);
     Solution_ensemble_scaled = rescale(Solution_ensemble);
-    variance = rescale([0;Observation_ensemble_q(:,1)],-1,1);
+    variance = rescale([5e-20;Observation_ensemble_q(:,1)],-1,1);
     
     % PREDICTION STAGE
     mean_Observation_ensemble = mean(Observation_ensemble,2);
