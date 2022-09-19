@@ -37,4 +37,4 @@ https://cloud.tu-braunschweig.de/s/q6WfZGGQbwG5b75
     + This function takes damage parameters and excitation signal as the inputs, generates an FEM model on COMSOL and outputs the system matrices (mass matrix, stiffness matrix and load matrix) without solving the system. 
     
 * NewmarkIntegration3.m: 
-    + This function implements the implicit Newmark-beta time integration method. It is an implicit integration scheme. Here, alpha and beta are the constants that are set to 0.25 and 0.5 respectively, such that the scheme remains unconditionally stable.
+    + This function implements the implicit Newmark-beta time integration method. It is an implicit integration scheme. Here, alpha and beta are the constants that are set to 0.25 and 0.5 respectively, such that the scheme remains stable.
